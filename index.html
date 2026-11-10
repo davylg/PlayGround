@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#070b10" />
+  <meta name="description" content="VEM COMER — a tactical 5v5 spike shooter for mobile and desktop." />
+  <title>VEM COMER — Tactical Ops</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%23070b10'/><path d='M14 18h10l8 16 8-16h10L36 50h-8z' fill='%23ff5a36'/></svg>" />
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <div id="app">
+    <div id="boot" class="boot">
+      <div class="boot-mark">VC</div>
+      <div class="boot-line"><span></span></div>
+      <div class="boot-copy">INITIALIZING TACTICAL NETWORK</div>
+    </div>
+
+    <!-- MAIN MENU -->
+    <section id="screen-menu" class="screen menu-screen active">
+      <div class="menu-atmosphere">
+        <canvas id="menu-grid"></canvas>
+        <div class="menu-vignette"></div>
+        <div class="menu-scan"></div>
+        <div class="menu-noise"></div>
+      </div>
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">VC</div>
+          <div class="brand-text"><strong>VEM COMER</strong><span>TACTICAL OPS // 5V5</span></div>
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn" id="btn-settings" title="Settings">⚙</button>
+          <button class="icon-btn" id="btn-sound" title="Mute">◉</button>
+          <span class="server-pill"><i></i> ONLINE</span>
+        </div>
+      </header>
+      <main class="menu-main">
+        <div class="hero-copy">
+          <div class="kicker"><span>SEASON 01</span> // CINDER PROTOCOL</div>
+          <h1><span>VEM</span><span class="accent">COMER</span></h1>
+          <p class="tagline">Twelve operatives. Five maps. Two sites each.<br />Forty-five seconds. Plant the spike. Hold the line.</p>
+          <div class="hero-actions">
+            <button id="btn-solo" class="btn btn-primary"><span>DEPLOY SOLO</span><b>↗</b></button>
+            <button id="btn-squad" class="btn btn-secondary"><span>SQUAD LINK</span><b>◈</b></button>
+          </div>
+          <div class="hero-stats">
+            <div><b>12</b><span>OPERATIVES</span></div>
+            <div><b>05</b><span>MAPS</span></div>
+            <div><b>5v5</b><span>TACTICAL</span></div>
+            <div><b>45s</b><span>SPIKE FUSE</span></div>
+          </div>
+          <div class="hero-note">ALL OPERATIVES ARE ADULTS. TACTICAL GEAR ONLY.</div>
+        </div>
+        <aside class="featured-card" id="featured-card">
+          <div class="featured-art" id="featured-art"></div>
+          <div class="featured-meta">
+            <div class="featured-role">DUELIST // BR</div>
+            <div class="featured-name">NOVA</div>
+            <div class="featured-line"></div>
+            <div class="featured-power"><span>Q</span> PHOTON BURST</div>
+            <div class="featured-weapon">SOLARIS AR</div>
+          </div>
+          <div class="featured-index">01 / 12</div>
+        </aside>
+      </main>
+      <footer class="menu-footer">
+        <div class="ticker"><span>●</span> PLANT <b>//</b> DEFEND <b>//</b> DEFUSE <b>//</b> 12 ROUNDS TO VICTORY <b>//</b> ECONOMY RESETS AT HALFTIME</div>
+        <div class="build">BUILD 0.1.0 // MOBILE READY</div>
+      </footer>
+    </section>
+
+    <!-- AGENT SELECT -->
+    <section id="screen-agents" class="screen select-screen">
+      <header class="topbar select-top">
+        <button class="text-btn" id="btn-agent-back">← BACK</button>
+        <div class="step-label"><span>01</span> / 02 &nbsp; SELECT OPERATIVE</div>
+        <div class="top-actions"><span class="server-pill"><i></i> ROSTER LOCKED</span></div>
+      </header>
+      <main class="agent-layout">
+        <aside class="agent-detail" id="agent-detail"></aside>
+        <div class="agent-browser">
+          <div class="browser-head">
+            <div>
+              <div class="kicker">ACTIVE ROSTER // 12</div>
+              <h2>CHOOSE YOUR <span>EDGE</span></h2>
+            </div>
+            <div class="roster-filter">
+              <button class="filter active" data-role="all">ALL</button>
+              <button class="filter" data-role="Duelist">DUELIST</button>
+              <button class="filter" data-role="Controller">CONTROLLER</button>
+              <button class="filter" data-role="Initiator">INITIATOR</button>
+              <button class="filter" data-role="Sentinel">SENTINEL</button>
+            </div>
+          </div>
+          <div class="agent-grid" id="agent-grid"></div>
+        </div>
+      </main>
+      <footer class="select-footer">
+        <div class="footer-hint">EACH OPERATOR BRINGS A UNIQUE POWER + SIGNATURE WEAPON</div>
+        <button class="btn btn-primary" id="btn-lock-agent"><span>CONFIRM OPERATIVE</span><b>→</b></button>
+      </footer>
+    </section>
+
+    <!-- MAP SELECT -->
+    <section id="screen-maps" class="screen select-screen map-screen">
+      <header class="topbar select-top">
+        <button class="text-btn" id="btn-map-back">← OPERATIVE</button>
+        <div class="step-label"><span>02</span> / 02 &nbsp; SELECT BATTLEFIELD</div>
+        <div class="top-actions"><span class="server-pill"><i></i> 5 MAPS AVAILABLE</span></div>
+      </header>
+      <main class="map-layout">
+        <div class="map-browser">
+          <div class="browser-head">
+            <div>
+              <div class="kicker">TACTICAL MAPS // 05</div>
+              <h2>PICK YOUR <span>GROUND</span></h2>
+            </div>
+            <div class="map-legend"><span><i class="dot-a"></i> A SITE</span><span><i class="dot-b"></i> B SITE</span><span><i class="dot-spawn"></i> SPAWNS</span></div>
+          </div>
+          <div class="map-grid" id="map-grid"></div>
+        </div>
+        <aside class="map-detail" id="map-detail"></aside>
+      </main>
+      <footer class="select-footer">
+        <div class="footer-hint">ALL MAPS FEATURE TWO BOMB SITES, LARGE-SCALE ROTATIONS + 15s BUY WINDOWS</div>
+        <button class="btn btn-primary" id="btn-deploy"><span>DEPLOY TO MATCH</span><b>↗</b></button>
+      </footer>
+    </section>
+
+    <!-- LOADING / MATCH FOUND -->
+    <section id="screen-loading" class="screen loading-screen">
+      <div class="loading-wrap">
+        <div class="kicker">MATCH FOUND // SECURE LOBBY</div>
+        <h2 id="loading-map">NEON DOCKS</h2>
+        <div class="loading-teams">
+          <div class="loading-team alpha" id="loading-alpha"></div>
+          <div class="loading-vs"><span>VS</span><b>FIRST TO 12</b></div>
+          <div class="loading-team bravo" id="loading-bravo"></div>
+        </div>
+        <div class="loading-bar"><span></span></div>
+        <div class="loading-copy">SYNCHRONIZING OPERATIVES // BUILDING NAVMESH // READYING BOTS</div>
+      </div>
+    </section>
+
+    <!-- GAME -->
+    <section id="screen-game" class="screen game-screen">
+      <canvas id="scene"></canvas>
+      <div id="hud" class="hud">
+        <div class="hud-top">
+          <div class="scoreboard">
+            <div class="team-score alpha"><span class="team-tag">ALPHA</span><b id="score-alpha">0</b><em id="side-alpha">ATK</em></div>
+            <div class="match-clock">
+              <div class="clock-label" id="clock-label">BUY PHASE</div>
+              <div class="clock-time" id="clock-time">00:15</div>
+              <div class="round-label" id="round-label">ROUND 1</div>
+            </div>
+            <div class="team-score bravo"><em id="side-bravo">DEF</em><b id="score-bravo">0</b><span class="team-tag">BRAVO</span></div>
+          </div>
+          <div class="objective-strip" id="objective-strip">
+            <span class="obj-site" id="obj-site">A</span>
+            <span class="obj-copy" id="obj-copy">PLANT THE SPIKE</span>
+            <span class="obj-alive" id="obj-alive">5 v 5</span>
+          </div>
+        </div>
+
+        <div class="minimap-wrap">
+          <div class="minimap-head"><span id="minimap-map">NEON DOCKS</span><b>N</b></div>
+          <canvas id="minimap" width="220" height="220"></canvas>
+          <div class="minimap-foot"><span id="minimap-site">SITE A</span><span>SPIKE: <b id="minimap-bomb">CARRIED</b></span></div>
+        </div>
+
+        <div class="killfeed" id="killfeed"></div>
+
+        <div class="chat-feed" id="chat-feed"></div>
+
+        <div class="vitals">
+          <div class="vital-row">
+            <div class="health-block">
+              <span class="vital-label">HEALTH</span>
+              <div class="health-bar"><i id="health-fill"></i><b id="health-value">100</b></div>
+            </div>
+            <div class="armor-block">
+              <span class="vital-label">ARMOR</span>
+              <div class="armor-bar"><i id="armor-fill"></i><b id="armor-value">0</b></div>
+            </div>
+          </div>
+          <div class="vital-meta">
+            <div class="money"><span>₡</span><b id="money-value">800</b></div>
+            <div class="agent-mini" id="agent-mini">NOVA</div>
+          </div>
+          <div class="ability-card" id="ability-card">
+            <div class="ability-ring" id="ability-ring"><b id="ability-key">Q</b></div>
+            <div class="ability-copy"><span id="ability-name">PHOTON BURST</span><small id="ability-status">READY</small></div>
+          </div>
+        </div>
+
+        <div class="weapon-block">
+          <div class="ammo-line"><b id="ammo-mag">12</b><span>/</span><em id="ammo-reserve">48</em></div>
+          <div class="weapon-name" id="weapon-name">STANDARD-9</div>
+          <div class="weapon-type" id="weapon-type">SIDEARM</div>
+          <div class="weapon-slots"><span id="slot-1">1 · —</span><span id="slot-2">2 · STANDARD-9</span></div>
+        </div>
+
+        <div class="crosshair" id="crosshair"><i></i><i></i><i></i><i></i><b></b></div>
+        <div class="hitmarker" id="hitmarker"><i></i><i></i><i></i><i></i></div>
+
+        <div class="interact-prompt" id="interact-prompt">
+          <div class="prompt-key" id="prompt-key">E</div>
+          <div class="prompt-copy"><b id="prompt-text">HOLD TO PLANT</b><span id="prompt-sub">SITE A</span></div>
+          <div class="prompt-progress"><i id="prompt-fill"></i></div>
+        </div>
+
+        <div class="toast-stack" id="toast-stack"></div>
+        <div class="bomb-status" id="bomb-status"><span>SPIKE ARMED</span><b id="bomb-timer">45.0</b><small id="bomb-site">SITE A</small></div>
+
+        <div class="hud-buttons">
+          <button id="btn-buy" class="hud-btn">BUY <b>B</b></button>
+          <button id="btn-chat" class="hud-btn">CHAT <b>T</b></button>
+          <button id="btn-voice" class="hud-btn mic">VOICE <b>V</b></button>
+          <button id="btn-scoreboard" class="hud-btn">TEAM <b>TAB</b></button>
+        </div>
+
+        <div class="mobile-controls" id="mobile-controls">
+          <div class="joystick-zone" id="joystick-zone"><div class="joystick-base"><div class="joystick-knob" id="joystick-knob"></div></div></div>
+          <div class="mobile-actions">
+            <button class="m-btn fire" id="m-fire">FIRE</button>
+            <button class="m-btn" id="m-ads">ADS</button>
+            <button class="m-btn" id="m-reload">RELOAD</button>
+            <button class="m-btn" id="m-interact">USE</button>
+            <button class="m-btn ability" id="m-ability">Q</button>
+          </div>
+        </div>
+
+        <div class="flash-overlay" id="flash-overlay"></div>
+        <div class="damage-overlay" id="damage-overlay"></div>
+        <div class="emp-overlay" id="emp-overlay"></div>
+        <div class="invis-overlay" id="invis-overlay"></div>
+
+        <div class="click-to-play" id="click-to-play">
+          <div class="ctp-ring"></div>
+          <b>CLICK TO ENGAGE</b>
+          <span>POINTER LOCK · WASD MOVE · LMB FIRE · RMB ADS</span>
+        </div>
+
+        <div class="round-banner" id="round-banner"><div class="rb-kicker" id="rb-kicker">ROUND 1</div><div class="rb-title" id="rb-title">BUY PHASE</div><div class="rb-sub" id="rb-sub">15 SECONDS</div></div>
+        <div class="death-overlay" id="death-overlay"><span>ELIMINATED</span><b id="death-by">BY NOVA</b><small>SPECTATING // ROUND CONTINUES</small></div>
+      </div>
+
+      <!-- BUY MENU -->
+      <div class="buy-overlay" id="buy-overlay">
+        <div class="buy-panel">
+          <div class="buy-head">
+            <div>
+              <div class="kicker">PRE-ROUND ARMORY</div>
+              <h2>BUY <span>PHASE</span></h2>
+            </div>
+            <div class="buy-wallet"><span>CREDITS</span><b id="buy-money">800</b></div>
+            <div class="buy-timer"><span>WINDOW</span><b id="buy-timer">15</b></div>
+            <button class="close-btn" id="btn-buy-close">✕</button>
+          </div>
+          <div class="buy-body">
+            <div class="buy-filters" id="buy-filters">
+              <button class="filter active" data-cat="all">ALL</button>
+              <button class="filter" data-cat="Sidearm">SIDEARM</button>
+              <button class="filter" data-cat="SMG">SMG</button>
+              <button class="filter" data-cat="Shotgun">SHOTGUN</button>
+              <button class="filter" data-cat="Rifle">RIFLE</button>
+              <button class="filter" data-cat="Marksman">MARKSMAN</button>
+              <button class="filter" data-cat="LMG">LMG</button>
+              <button class="filter" data-cat="Sniper">SNIPER</button>
+            </div>
+            <div class="shop-grid" id="shop-grid"></div>
+            <div class="armor-row">
+              <div class="armor-title">PROTECTION</div>
+              <button class="armor-card" id="buy-light"><span>LIGHT ARMOR</span><b>400</b><small>+25 ARMOR</small></button>
+              <button class="armor-card" id="buy-heavy"><span>HEAVY ARMOR</span><b>800</b><small>+50 ARMOR</small></button>
+            </div>
+          </div>
+          <div class="buy-foot"><span>BUY WINDOW CLOSES WHEN THE BARRIERS DROP</span><button class="btn btn-primary small" id="btn-buy-ready"><span>READY UP</span><b>→</b></button></div>
+        </div>
+      </div>
+
+      <!-- CHAT -->
+      <div class="chat-panel" id="chat-panel">
+        <div class="chat-head"><span>TEAM COMMS</span><b>ALPHA</b></div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-row">
+          <input id="chat-input" type="text" maxlength="120" placeholder="Call a site, coordinate a push..." autocomplete="off" />
+          <button id="chat-send">SEND</button>
+          <button id="chat-voice" title="Voice input">◉</button>
+        </div>
+        <div class="chat-hint">ENTER TO SEND · ESC TO CLOSE · V FOR VOICE</div>
+      </div>
+
+      <!-- SCOREBOARD -->
+      <div class="scoreboard-modal" id="scoreboard-modal">
+        <div class="sb-head"><div><div class="kicker">MATCH STATUS</div><h2>SCOREBOARD</h2></div><button class="close-btn" id="btn-sb-close">✕</button></div>
+        <div class="sb-teams">
+          <div class="sb-team" id="sb-alpha"></div>
+          <div class="sb-team" id="sb-bravo"></div>
+        </div>
+      </div>
+
+      <!-- HALFTIME -->
+      <div class="halftime-overlay" id="halftime-overlay">
+        <div class="ht-kicker">HALFTIME // ECONOMY RESET</div>
+        <div class="ht-title">SIDES <span>SWAPPED</span></div>
+        <div class="ht-copy" id="ht-copy">ALPHA NOW DEFENDS · BRAVO NOW ATTACKS</div>
+        <div class="ht-stats"><div><b>6</b><span>ROUNDS</span></div><div><b>₡800</b><span>RESET CREDITS</span></div><div><b>12</b><span>ROUNDS TO WIN</span></div></div>
+        <div class="ht-bar"><span></span></div>
+      </div>
+
+      <!-- MATCH END -->
+      <div class="match-end" id="match-end">
+        <div class="me-kicker" id="me-kicker">MATCH COMPLETE</div>
+        <div class="me-title" id="me-title">VICTORY</div>
+        <div class="me-score" id="me-score">12 — 7</div>
+        <div class="me-copy" id="me-copy">ALPHA TAKES THE MATCH</div>
+        <div class="me-actions">
+          <button class="btn btn-primary" id="btn-rematch"><span>REMATCH</span><b>↻</b></button>
+          <button class="btn btn-secondary" id="btn-to-menu"><span>MAIN MENU</span><b>↗</b></button>
+        </div>
+      </div>
+
+      <button class="exit-match" id="btn-exit">LEAVE MATCH</button>
+    </section>
+
+    <!-- SETTINGS -->
+    <div class="modal" id="settings-modal">
+      <div class="modal-panel">
+        <div class="modal-head"><div><div class="kicker">SYSTEM</div><h2>SETTINGS</h2></div><button class="close-btn" id="btn-settings-close">✕</button></div>
+        <div class="setting-row"><span>MOUSE SENSITIVITY</span><input id="setting-sens" type="range" min="0.3" max="2" step="0.05" value="1" /><b id="sens-val">1.00</b></div>
+        <div class="setting-row"><span>MASTER VOLUME</span><input id="setting-vol" type="range" min="0" max="1" step="0.05" value="0.7" /><b id="vol-val">70%</b></div>
+        <div class="setting-row"><span>BOT DIFFICULTY</span><div class="seg" id="difficulty-seg"><button data-diff="recruit">RECRUIT</button><button data-diff="pro" class="active">PRO</button><button data-diff="elite">ELITE</button></div></div>
+        <div class="setting-row"><span>VOICE INPUT</span><div class="seg" id="voice-seg"><button data-voice="on" class="active">ON</button><button data-voice="off">OFF</button></div></div>
+        <div class="setting-note">Voice chat uses your browser's speech recognition. Availability varies by browser and permissions.</div>
+      </div>
+    </div>
+
+    <!-- SQUAD LINK -->
+    <div class="modal" id="squad-modal">
+      <div class="modal-panel squad-panel">
+        <div class="modal-head"><div><div class="kicker">MULTIPLAYER</div><h2>SQUAD <span>LINK</span></h2></div><button class="close-btn" id="btn-squad-close">✕</button></div>
+        <div class="squad-copy">Host a room or join with a code. Real players take control of Alpha operators; bots fill the rest of both teams.</div>
+        <div class="squad-tabs"><button class="active" data-squad-tab="host">HOST A ROOM</button><button data-squad-tab="join">JOIN A ROOM</button></div>
+        <div class="squad-host" id="squad-host">
+          <div class="squad-row"><span>ROOM CODE</span><b id="squad-code">—</b><button id="btn-gen-code">GENERATE</button></div>
+          <div class="squad-row"><span>LINK</span><input id="squad-link" readonly placeholder="Generate a room code first" /><button id="btn-copy-link">COPY</button></div>
+          <div class="squad-status" id="squad-status">Create a room, share the code, then deploy. Same-browser tabs and WebRTC peers are supported.</div>
+          <button class="btn btn-primary" id="btn-squad-host"><span>HOST + DEPLOY</span><b>↗</b></button>
+        </div>
+        <div class="squad-join hidden" id="squad-join">
+          <div class="squad-row"><span>ROOM CODE</span><input id="squad-join-code" maxlength="8" placeholder="VC-XXXX" /></div>
+          <button class="btn btn-primary" id="btn-squad-join"><span>JOIN ROOM</span><b>↗</b></button>
+          <div class="squad-status" id="squad-join-status">Ask the host for their room code.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
