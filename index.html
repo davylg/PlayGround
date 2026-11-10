@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#10131e">
+  <title>Cauda de Combate — Arena Felina</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Cauda de Combate"><span class="brand-icon">✦</span><span>CAUDA DE <b>COMBATE</b></span></a>
+      <div class="top-actions"><span class="online"><i></i> ARENA ABERTA</span><button id="sound-toggle" class="icon-button" aria-label="Alternar som">♫ <span>SOM</span></button></div>
+    </header>
+    <section class="game-frame" aria-label="Jogo de luta Cauda de Combate">
+      <canvas id="game" width="960" height="540" aria-label="Arena de luta"></canvas>
+      <div id="overlay" class="overlay">
+        <div class="menu-card">
+          <div class="eyebrow"><span>✦</span> TORNEIO DAS NOVE VIDAS <span>✦</span></div>
+          <h1>CAUDA DE<br><em>COMBATE</em></h1>
+          <p class="tagline">Garras afiadas. Caudas em movimento.<br>Que vença o mais <b>felino!</b></p>
+          <div class="roster" id="roster" aria-label="Escolha seu lutador"></div>
+          <button id="start-button" class="play-button">ENTRAR NA ARENA <span>↗</span></button>
+          <p class="menu-tip">Escolha seu lutador · desafie a CPU · vire lenda</p>
+        </div>
+        <div class="menu-side-note">ARENA<br><b>01</b> <span>—</span> LUA CHEIA</div>
+        <div class="menu-controls"><span>⌨ TECLADO</span> A / D mover <i>·</i> W pular <i>·</i> J atacar <i>·</i> K especial</div>
+      </div>
+      <div id="fight-ui" class="fight-ui hidden">
+        <div class="fighter-hud player-hud"><div class="hud-top"><span id="player-name">LUNA</span><span class="round-label">JOGADOR 1</span></div><div class="health-track"><div id="player-health" class="health-fill"></div></div><div class="power-track"><div id="player-power" class="power-fill"></div></div></div>
+        <div class="round-badge"><span>ROUND</span><b id="round-number">01</b></div>
+        <div class="fighter-hud cpu-hud"><div class="hud-top"><span id="cpu-name">BRASA</span><span class="round-label">CPU</span></div><div class="health-track"><div id="cpu-health" class="health-fill"></div></div><div class="power-track"><div id="cpu-power" class="power-fill"></div></div></div>
+      </div>
+      <div id="touch-controls" class="touch-controls hidden"><div><button data-key="left">◀</button><button data-key="right">▶</button></div><div><button data-key="jump">▲</button><button data-key="attack">✦</button><button data-key="special">✧</button></div></div>
+      <div id="announcement" class="announcement hidden"></div>
+      <div id="pause-badge" class="pause-badge hidden">PAUSADO <small>APERTE P PARA VOLTAR</small></div>
+    </section>
+    <footer class="bottom-bar"><div class="controls-legend"><span><kbd>A</kbd><kbd>D</kbd> MOVER</span><span><kbd>W</kbd> PULAR</span><span><kbd>J</kbd> GOLPE</span><span><kbd>K</kbd> PODER</span><span><kbd>P</kbd> PAUSA</span></div><span class="footer-note">FEITO DE BIGODES E CORAGEM <b>✦</b></span></footer>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
