@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#071a25" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="description" content="Skyhook — tap to fly, hold to grapple, and thread the ruins of a painted sky." />
+    <title>SKYHOOK — Flap. Hook. Survive.</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23071a25'/%3E%3Cpath d='M13 38c10-1 17-8 20-20 3 12 9 19 19 20-9 2-15 7-18 15-3-8-10-13-21-15Z' fill='%23ffd37a'/%3E%3Ccircle cx='31' cy='32' r='5' fill='%23ff6b4a'/%3E%3C/svg%3E" />
+    <script type="module" crossorigin src="./assets/index-CN9U91IE.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-lHG6lD8K.css">
+  </head>
+  <body>
+    <div id="app">
+      <div class="sky" aria-hidden="true">
+        <div class="sky__sun"></div>
+        <div class="sky__haze"></div>
+        <div class="sky__bands"></div>
+        <div class="sky__clouds sky__clouds--one"></div>
+        <div class="sky__clouds sky__clouds--two"></div>
+      </div>
+
+      <canvas id="game-canvas" aria-label="Skyhook game world"></canvas>
+      <div class="vignette" aria-hidden="true"></div>
+      <div id="impact-flash" class="impact-flash" aria-hidden="true"></div>
+      <div class="grain" aria-hidden="true"></div>
+
+      <div id="game-ui" class="game-ui" aria-hidden="true">
+        <div class="hud__score">
+          <span class="hud__score-kicker">SKY SCORE</span>
+          <span id="score" class="hud__score-number">0</span>
+        </div>
+
+        <div class="hud__best">
+          <span>BEST</span>
+          <strong id="best-score">00</strong>
+        </div>
+
+        <div class="hud__actions">
+          <button id="sound-button" class="icon-button" type="button" aria-label="Mute sound">
+            <svg class="icon-sound-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h3l5 4V5L7 9H4Zm11.5-1.3a5.8 5.8 0 0 1 0 8.6M18 5a9.5 9.5 0 0 1 0 14" /></svg>
+            <svg class="icon-sound-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h3l5 4V5L7 9H4Zm12 1 5 5m0-5-5 5" /></svg>
+          </button>
+          <button id="pause-button" class="icon-button" type="button" aria-label="Pause game">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zm6 0h4v14h-4z" /></svg>
+          </button>
+        </div>
+
+        <div class="hud__bottom">
+          <div class="hook-meter" id="hook-meter">
+            <div class="hook-meter__label">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.8 5.3a4.8 4.8 0 0 0-8.2 3.4v6.8a2.6 2.6 0 1 1-5.2 0V12" /><path d="M2.4 14.2 3.4 12l1 2.2 2.2 1-2.2 1-1 2.2-1-2.2-2.2-1Z" /></svg>
+              <span>HOOK CHARGE</span>
+            </div>
+            <div class="hook-meter__track"><div id="hook-fill" class="hook-meter__fill"></div><i></i><i></i><i></i></div>
+          </div>
+          <div class="control-hint">
+            <span><b>TAP</b> FLAP</span>
+            <span class="control-hint__dot"></span>
+            <span><b>HOLD</b> GRAPPLE</span>
+          </div>
+        </div>
+
+        <div id="hook-hint" class="hook-hint">
+          <span class="hook-hint__ring"></span>
+          <span>HOLD TO HOOK</span>
+        </div>
+
+        <div id="combo" class="combo" aria-live="polite"></div>
+        <div id="toast" class="toast" aria-live="polite"></div>
+        <div class="speed-lines" aria-hidden="true"></div>
+      </div>
+
+      <section id="title-screen" class="screen screen--title">
+        <div class="title__top">
+          <div class="brand-chip">
+            <span class="brand-chip__star">✦</span>
+            <span>THE LAST GALE</span>
+          </div>
+          <div class="title__record">
+            <span>PERSONAL BEST</span>
+            <strong id="title-best">00</strong>
+          </div>
+        </div>
+
+        <div class="title__main">
+          <p class="eyebrow"><span></span> A FLAPPY TALE WITH TEETH <span></span></p>
+          <h1 class="logo" aria-label="Skyhook">
+            <span class="logo__sky">SKY</span><span class="logo__hook">HOOK</span>
+          </h1>
+          <p class="tagline">The sky is falling.<br /><em>Catch a ride.</em></p>
+
+          <button id="play-button" class="button button--play" type="button">
+            <span class="button__flare"></span>
+            <span class="button__label">PLAY</span>
+            <svg viewBox="0 0 32 20" aria-hidden="true"><path d="M2 10h26M21 3l8 7-8 7" /></svg>
+          </button>
+
+          <div class="how-to">
+            <div class="how-to__item">
+              <span class="how-to__icon">↑</span>
+              <span><b>TAP</b><small>flap &amp; climb</small></span>
+            </div>
+            <div class="how-to__rule"></div>
+            <div class="how-to__item">
+              <span class="how-to__icon how-to__icon--hook">⌁</span>
+              <span><b>HOLD</b><small>hook the light</small></span>
+            </div>
+            <div class="how-to__rule"></div>
+            <div class="how-to__item">
+              <span class="how-to__icon how-to__icon--spark">✦</span>
+              <span><b>THREAD</b><small>the ruined gates</small></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="title__bottom">
+          <p>BEST PLAYED WITH SOUND <span class="pulse-dot"></span></p>
+          <p class="title__credit">A TINY SKY ODYSSEY · 2026</p>
+        </div>
+      </section>
+
+      <section id="gameover-screen" class="screen screen--gameover is-hidden" aria-hidden="true">
+        <div class="result">
+          <div class="result__eyebrow"><span></span> RUN COMPLETE <span></span></div>
+          <h2 class="result__title">GALE'D<br /><em>OUT.</em></h2>
+          <p id="result-line" class="result__line">The clouds caught you.</p>
+
+          <div class="result__stats">
+            <div class="result__stat result__stat--hero">
+              <span>SCORE</span>
+              <strong id="final-score">0</strong>
+            </div>
+            <div class="result__stat">
+              <span>HOOKS</span>
+              <strong id="final-hooks">0</strong>
+            </div>
+            <div class="result__stat">
+              <span>BEST</span>
+              <strong id="final-best">0</strong>
+            </div>
+          </div>
+          <div id="new-best" class="new-best" hidden><span>✦</span> NEW PERSONAL BEST <span>✦</span></div>
+
+          <div class="result__actions">
+            <button id="retry-button" class="button button--retry" type="button">
+              <span class="button__flare"></span>
+              <span class="button__label">FLY AGAIN</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 1-2.3-5.7M20 3v6h-6" /></svg>
+            </button>
+            <button id="home-button" class="text-button" type="button">BACK TO NEST</button>
+          </div>
+          <p class="result__tip" id="result-tip">TIP · HOLD NEAR A GOLDEN RING TO SWING THROUGH THE GATE.</p>
+        </div>
+      </section>
+
+      <section id="pause-screen" class="screen screen--pause is-hidden" aria-hidden="true">
+        <div class="pause-card">
+          <span class="eyebrow"><span></span> CATCHING OUR BREATH <span></span></span>
+          <h2>PAUSED</h2>
+          <p>The gale waits for no bird. Take your time.</p>
+          <div class="pause-card__actions">
+            <button id="resume-button" class="button button--small" type="button"><span class="button__label">RESUME</span></button>
+            <button id="restart-button" class="text-button" type="button">RESTART RUN</button>
+          </div>
+        </div>
+      </section>
+
+      <div id="rotate-notice" class="rotate-notice" aria-hidden="true">
+        <div class="rotate-notice__phone"></div>
+        <p>TURN THE SKY SIDEWAYS FOR A WIDER RIDE</p>
+      </div>
+    </div>
+  </body>
+</html>
