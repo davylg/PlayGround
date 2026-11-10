@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#07100d">
+  <meta name="description" content="Rick & Morty: Portal Panic — um jogo de ação 3D interdimensional.">
+  <title>Rick &amp; Morty: Portal Panic</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three.module.js",
+        "three/addons/": "./vendor/addons/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="app">
+    <canvas id="game-canvas" aria-label="Arena 3D do jogo"></canvas>
+
+    <div id="ui">
+      <div class="topbar">
+        <div class="hud-panel health-panel">
+          <div class="portrait" aria-hidden="true">
+            <svg viewBox="0 0 64 64">
+              <defs>
+                <linearGradient id="portraitBg" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#273f39"/><stop offset="1" stop-color="#101a17"/>
+                </linearGradient>
+              </defs>
+              <rect width="64" height="64" rx="12" fill="url(#portraitBg)"/>
+              <path d="M18 49c0-10 6-14 14-14s14 4 14 14" fill="#f5d33f"/>
+              <path d="M25 37h14v8H25z" fill="#e6bd2f"/>
+              <ellipse cx="32" cy="26" rx="12" ry="13" fill="#f1bf97"/>
+              <path d="M20 24c0-10 5-15 12-15s12 5 12 15c-2-5-5-7-8-6-4 1-6 4-8 3-3-1-5 0-8 3z" fill="#744327"/>
+              <path d="M22 18c4-5 9-7 13-6" stroke="#9c5c33" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <ellipse cx="27" cy="26" rx="4.4" ry="5" fill="#fff"/>
+              <ellipse cx="37" cy="26" rx="4.4" ry="5" fill="#fff"/>
+              <circle cx="27.5" cy="26.5" r="1.8" fill="#1a1a1a"/>
+              <circle cx="36.5" cy="26.5" r="1.8" fill="#1a1a1a"/>
+              <path d="M27 34c3 1.6 7 1.6 10 0" stroke="#8b5038" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+              <path d="M16 64c2-7 8-11 16-11s14 4 16 11" fill="#3f5f9f"/>
+            </svg>
+          </div>
+          <div class="health-copy">
+            <div class="hud-label"><span class="dot"></span> MORTY <span id="hp-value">100</span></div>
+            <div class="bar hp-bar"><i id="hp-fill"></i><b id="hp-lag"></b></div>
+            <div class="tiny-row"><span>VIDA</span><span id="dash-status">DASH PRONTO</span></div>
+          </div>
+        </div>
+
+        <div class="wave-panel hud-panel">
+          <span class="eyebrow">DIMENSÃO C-137</span>
+          <div id="wave-title">ONDA 01</div>
+          <div class="wave-meta"><span id="enemies-left">5 HOSTIS</span><span class="separator">/</span><span>GARAGEM</span></div>
+        </div>
+
+        <div class="score-panel hud-panel">
+          <div class="score-block">
+            <span class="eyebrow">PONTOS</span>
+            <strong id="score-value">000000</strong>
+          </div>
+          <div class="score-block seeds">
+            <span class="eyebrow">SEMENTES</span>
+            <strong id="seed-value">00</strong>
+          </div>
+          <div id="combo-chip" class="combo-chip"><span>COMBO</span><b id="combo-value">x1</b></div>
+        </div>
+      </div>
+
+      <div class="minimap-wrap hud-panel">
+        <canvas id="minimap" width="180" height="180"></canvas>
+        <span class="minimap-label">RADAR</span>
+        <span class="radar-sweep"></span>
+      </div>
+
+      <div id="bossbar" class="bossbar">
+        <div class="boss-copy"><span>ALVO PRIORITÁRIO</span><b>MORTY MALIGNO</b></div>
+        <div class="bar"><i id="boss-fill"></i></div>
+      </div>
+
+      <div id="crosshair" aria-hidden="true">
+        <span class="ch-dot"></span><i class="ch ch-t"></i><i class="ch ch-r"></i><i class="ch ch-b"></i><i class="ch ch-l"></i>
+        <b class="ch-ring"></b>
+      </div>
+      <div id="hitmarker" aria-hidden="true"></div>
+      <div id="damage-vignette"></div>
+      <div id="scanlines"></div>
+
+      <div class="bottom-left hud-panel gun-panel">
+        <div class="gun-icon" aria-hidden="true">
+          <svg viewBox="0 0 76 52">
+            <path d="M8 18h28l8-6h21l5 9-8 7H45l-4 12H26l2-12H10z" fill="#d8e7e1" stroke="#5b7e72" stroke-width="2"/>
+            <path d="M47 15h13l3 5-5 4H48z" fill="#7dff5a" opacity=".9"/>
+            <circle cx="52" cy="19" r="4" fill="#c8ffb9"/>
+            <path d="M20 36h10v4H20z" fill="#2a3e38"/>
+          </svg>
+        </div>
+        <div class="gun-copy">
+          <div class="hud-label"><span class="dot green"></span> ARMA DE PORTAL</div>
+          <div class="bar energy-bar"><i id="energy-fill"></i></div>
+          <div class="tiny-row"><span id="energy-label">ENERGIA 12/12</span><span>SEGURE PARA ATIRAR</span></div>
+        </div>
+      </div>
+
+      <div class="bottom-right">
+        <button id="btn-pause" class="icon-btn" type="button" aria-label="Pausar">Ⅱ</button>
+        <button id="btn-sound" class="icon-btn" type="button" aria-label="Som">♪</button>
+      </div>
+
+      <div id="wave-banner" class="wave-banner">
+        <span id="banner-kicker">PREPARE-SE</span>
+        <strong id="banner-title">ONDA 1</strong>
+        <em id="banner-sub">Eles vêm do portal.</em>
+      </div>
+
+      <div id="toast" class="toast"></div>
+
+      <div id="control-hint" class="control-hint">
+        <span><kbd>WASD</kbd> MOVER</span>
+        <span><kbd>MOUSE</kbd> MIRAR</span>
+        <span><kbd>CLIQUE</kbd> ATIRAR</span>
+        <span><kbd>ESPAÇO</kbd> DASH</span>
+      </div>
+
+      <div id="mobile-controls" aria-hidden="true">
+        <div id="joy-zone" class="joy-zone">
+          <div class="joy-base"><span class="joy-ring"></span><i id="joy-knob" class="joy-knob"></i></div>
+          <span class="joy-label">MOVER</span>
+        </div>
+        <div class="mobile-actions">
+          <button id="btn-dash-mobile" class="mobile-btn dash" type="button"><span>DASH</span></button>
+          <button id="btn-fire-mobile" class="mobile-btn fire" type="button"><span>ATIRAR</span><i></i></button>
+        </div>
+      </div>
+    </div>
+
+    <section id="screen-title" class="screen title-screen">
+      <div class="title-noise"></div>
+      <div class="title-top">
+        <span class="tagline">UMA AVENTURA INTERDIMENSIONAL</span>
+        <button id="btn-sound-title" class="sound-pill" type="button" aria-label="Ativar ou desativar som"><span class="sound-led"></span><span id="sound-title-label">SOM LIGADO</span></button>
+      </div>
+      <div class="title-lockup">
+        <div class="rick-and-morty">RICK <span>&</span> MORTY</div>
+        <h1>PORTAL<br><span>PANIC</span></h1>
+        <p class="title-sub">A garagem está infestada. Pegue a arma de portal,<br class="desktop-only"> sobreviva às ondas e mande o Morty Maligno de volta pro seu universo.</p>
+        <button id="btn-start" class="start-btn" type="button">
+          <span class="portal-btn-icon"></span>
+          <span class="start-copy"><b>ABRIR O PORTAL</b><small>INICIAR INVASÃO</small></span>
+          <i class="start-arrow">→</i>
+        </button>
+        <div class="best-line">MELHOR PONTUAÇÃO <b id="best-score">000000</b></div>
+      </div>
+      <div class="title-footer">
+        <div class="controls-grid">
+          <span><kbd>WASD</kbd> mover</span>
+          <span><kbd>MOUSE</kbd> mirar</span>
+          <span><kbd>CLIQUE</kbd> atirar</span>
+          <span><kbd>ESPAÇO</kbd> dash</span>
+        </div>
+        <span class="disclaimer">Fan game não oficial · inspirado em Rick and Morty (Adult Swim)</span>
+      </div>
+    </section>
+
+    <section id="screen-pause" class="screen pause-screen">
+      <div class="modal">
+        <span class="modal-kicker">SISTEMA EM ESPERA</span>
+        <h2>PAUSA</h2>
+        <p>A garagem não vai se limpar sozinha, Morty.</p>
+        <div class="modal-actions">
+          <button id="btn-resume" class="start-btn small" type="button"><span class="start-copy"><b>CONTINUAR</b><small>VOLTAR AO COMBATE</small></span></button>
+          <button id="btn-restart-pause" class="ghost-btn" type="button">REINICIAR</button>
+        </div>
+        <div class="modal-hint"><kbd>ESC</kbd> ou <kbd>P</kbd> para continuar</div>
+      </div>
+    </section>
+
+    <section id="screen-end" class="screen end-screen">
+      <div class="modal end-modal">
+        <span id="end-kicker" class="modal-kicker">SINAL PERDIDO</span>
+        <h2 id="end-title">GAME OVER</h2>
+        <p id="end-copy">Aww geez... a garagem venceu essa.</p>
+        <div class="end-stats">
+          <div><span>PONTOS</span><b id="end-score">000000</b></div>
+          <div><span>ONDAS</span><b id="end-wave">0/5</b></div>
+          <div><span>SEMENTES</span><b id="end-seeds">0</b></div>
+        </div>
+        <div class="modal-actions">
+          <button id="btn-retry" class="start-btn small" type="button"><span class="start-copy"><b>TENTAR DE NOVO</b><small>ABRIR OUTRO PORTAL</small></span></button>
+        </div>
+        <div class="modal-hint">Dica: o dash atravessa inimigos e recarrega em segundos.</div>
+      </div>
+    </section>
+
+    <div id="loading" class="loading-screen">
+      <div class="loader-portal"><span></span><i></i></div>
+      <div class="loader-text">CALIBRANDO ARMA DE PORTAL<span class="loading-dots">...</span></div>
+    </div>
+  </div>
+
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>
