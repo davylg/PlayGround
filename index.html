@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0614" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="description" content="Chain Blade — a night-dojo fruit slicing game. Swipe to slice, chain combos, awaken the blade." />
+  <title>Chain Blade — Fruit Ninja at the Night Dojo</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23ffe6a5'/%3E%3Cstop offset='1' stop-color='%23e08a24'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%230d0718'/%3E%3Cpath d='M32 8 50 32 32 56 14 32Z' fill='url(%23g)'/%3E%3Cpath d='M32 18 41 32 32 46 23 32Z' fill='%230d0718'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three.module.min.js",
+        "three/addons/": "./vendor/addons/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="app">
+    <canvas id="scene" aria-label="Chain Blade game arena"></canvas>
+
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div id="flash" class="flash" aria-hidden="true"></div>
+    <div id="hurt" class="hurt" aria-hidden="true"></div>
+
+    <!-- ============ HUD ============ -->
+    <div id="hud" class="hud is-hidden">
+      <div class="hud-top">
+        <div class="score-panel glass">
+          <span class="eyebrow">SCORE</span>
+          <span class="score-value" id="score">0</span>
+          <span class="best-line">BEST <b id="hud-best">0</b></span>
+        </div>
+
+        <div class="chain-badge" id="chain-badge" aria-label="Combo chain">
+          <div class="chain-ring" id="chain-ring"></div>
+          <div class="chain-inner">
+            <span class="chain-title">CHAIN</span>
+            <span class="chain-number" id="chain-value">0</span>
+            <span class="chain-mult" id="chain-mult">&times;1.0</span>
+          </div>
+        </div>
+
+        <div class="right-panel">
+          <div class="lives" id="lives" aria-label="Three lives">
+            <svg viewBox="0 0 26 24" class="heart"><path d="M13 21.5C9.6 18.8 2.4 13.9 2.4 8.4 2.4 5.2 4.8 3 7.7 3c2 0 3.9 1.1 5.3 3.2C14.4 4.1 16.3 3 18.3 3c2.9 0 5.3 2.2 5.3 5.4 0 5.5-7.2 10.4-10.6 13.1Z"/></svg>
+            <svg viewBox="0 0 26 24" class="heart"><path d="M13 21.5C9.6 18.8 2.4 13.9 2.4 8.4 2.4 5.2 4.8 3 7.7 3c2 0 3.9 1.1 5.3 3.2C14.4 4.1 16.3 3 18.3 3c2.9 0 5.3 2.2 5.3 5.4 0 5.5-7.2 10.4-10.6 13.1Z"/></svg>
+            <svg viewBox="0 0 26 24" class="heart"><path d="M13 21.5C9.6 18.8 2.4 13.9 2.4 8.4 2.4 5.2 4.8 3 7.7 3c2 0 3.9 1.1 5.3 3.2C14.4 4.1 16.3 3 18.3 3c2.9 0 5.3 2.2 5.3 5.4 0 5.5-7.2 10.4-10.6 13.1Z"/></svg>
+          </div>
+          <div class="utility">
+            <button id="pause-btn" class="icon-btn" type="button" aria-label="Pause game">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" /></svg>
+            </button>
+            <button id="mute-btn" class="icon-btn" type="button" aria-label="Mute sound">
+              <svg viewBox="0 0 24 24" class="sound-on"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+              <svg viewBox="0 0 24 24" class="sound-off"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="m17 9 5 6M22 9l-5 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="callout-layer" class="callout-layer" aria-hidden="true"></div>
+
+      <div class="blade-status" id="blade-status">
+        <span class="blade-gem"></span>
+        <span class="blade-copy">
+          <span class="blade-tier" id="blade-tier">TEMPERED BLADE</span>
+          <span class="blade-next" id="blade-next">4 CHAIN TO GILD</span>
+        </span>
+        <span class="blade-progress"><i id="blade-bar"></i></span>
+      </div>
+
+      <div id="tutorial-hint" class="tutorial-hint">
+        <span class="hint-swipe"><i></i></span>
+        <span>SWIPE ACROSS THE FRUIT</span>
+      </div>
+
+      <div class="hud-bottom">
+        <span class="hint-line">SLICE <i></i> CHAIN <i></i> AWAKEN</span>
+      </div>
+    </div>
+
+    <!-- ============ START SCREEN ============ -->
+    <div id="start-screen" class="screen start-screen">
+      <div class="screen-shade" aria-hidden="true"></div>
+      <div class="start-inner">
+        <div class="logo">
+          <div class="logo-kicker"><span></span>NIGHT DOJO &middot; FRUIT NINJA<span></span></div>
+          <h1 class="logo-title"><span class="logo-chain">CHAIN</span><span class="logo-blade">BLADE</span></h1>
+          <div class="logo-rule"><i></i><b></b><i></i></div>
+          <p class="logo-tag">Slice. Chain. Ascend.</p>
+        </div>
+
+        <div class="start-actions">
+          <button id="play-btn" class="play-btn" type="button" aria-label="Play">
+            <span class="play-btn-glow"></span>
+            <span class="play-btn-label">PLAY</span>
+            <span class="play-btn-sub">DRAW YOUR BLADE</span>
+          </button>
+          <div class="best-chip">
+            <span class="best-chip-label">PERSONAL BEST</span>
+            <span class="best-chip-value" id="start-best">0</span>
+          </div>
+        </div>
+
+        <div class="how-to">
+          <div class="how-item">
+            <span class="how-icon icon-swipe"><i></i></span>
+            <b>SWIPE</b><span>Cut every fruit in your path</span>
+          </div>
+          <div class="how-item">
+            <span class="how-icon icon-chain"><i></i><i></i><i></i></span>
+            <b>CHAIN</b><span>Keep slicing before the ring empties</span>
+          </div>
+          <div class="how-item">
+            <span class="how-icon icon-bomb"><i></i></span>
+            <b>DON'T</b><span>Never cut the fuse-lit bombs</span>
+          </div>
+        </div>
+
+        <div class="start-foot">
+          <button id="start-mute-btn" class="text-btn" type="button" aria-label="Toggle sound">
+            <span class="dot"></span><span class="mute-label">SOUND ON</span>
+          </button>
+          <span class="start-foot-note">3 HEARTS &middot; ENDLESS NIGHT</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PAUSE ============ -->
+    <div id="pause-screen" class="screen overlay-screen is-hidden">
+      <div class="screen-shade soft" aria-hidden="true"></div>
+      <div class="sheet glass pause-sheet">
+        <span class="sheet-kicker">THE BLADE RESTS</span>
+        <h2 class="sheet-title">PAUSED</h2>
+        <p class="sheet-copy">The night can wait. Your chain will hold.</p>
+        <div class="sheet-actions">
+          <button id="resume-btn" class="primary-btn" type="button">RESUME</button>
+          <button id="quit-btn" class="ghost-btn" type="button">END RUN</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ GAME OVER ============ -->
+    <div id="gameover-screen" class="screen overlay-screen is-hidden">
+      <div class="screen-shade soft" aria-hidden="true"></div>
+      <div class="sheet glass result-sheet">
+        <span class="sheet-kicker" id="result-kicker">RUN COMPLETE</span>
+        <h2 class="sheet-title" id="result-title">CHAIN BROKEN</h2>
+        <div class="final-score">
+          <span class="final-label">SCORE</span>
+          <span class="final-value" id="final-score">0</span>
+          <span id="record-badge" class="record-badge is-hidden">NEW RECORD</span>
+        </div>
+        <div class="stats-grid">
+          <div><span id="stat-fruit">0</span><small>FRUIT</small></div>
+          <div><span id="stat-chain">0</span><small>BEST CHAIN</small></div>
+          <div><span id="stat-time">0:00</span><small>SURVIVED</small></div>
+        </div>
+        <div class="result-best">PERSONAL BEST <b id="result-best">0</b></div>
+        <div class="sheet-actions">
+          <button id="retry-btn" class="primary-btn" type="button">PLAY AGAIN</button>
+          <button id="menu-btn" class="ghost-btn" type="button">MENU</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="error-card" class="error-card is-hidden" role="alert">
+      <h2>WEBGL UNAVAILABLE</h2>
+      <p>This dojo needs hardware-accelerated WebGL. Please enable it or try another browser.</p>
+    </div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
