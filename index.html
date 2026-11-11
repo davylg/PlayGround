@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1014">
+  <title>VEM COMER — Operação Eclipse</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="app">
+    <canvas id="game" aria-label="Campo de jogo 3D"></canvas>
+    <div class="grain"></div>
+
+    <section id="main-menu" class="screen active">
+      <header class="topbar"><div class="brand"><span class="brand-mark">V</span><span>VEM <b>COMER</b><small>OPERAÇÃO ECLIPSE</small></span></div><div class="season">BETA TÁTICA <i>●</i> OFFLINE</div></header>
+      <div class="menu-copy"><div class="eyebrow"><span></span> PROTOCOLO DE COMBATE · 01</div><h1>ENTRE.<br><em>DOMINE.</em><br>EXTRAIA.</h1><p>Uma equipe. Dois locais. Nenhuma segunda chance.</p><div class="menu-actions"><button id="play-button" class="button primary">INICIAR OPERAÇÃO <span>↗</span></button><button id="roster-button" class="button ghost">AGENTES <span>12</span></button></div><div class="menu-links"><button data-screen="armory">ARSENAL</button><button data-screen="settings">CONFIGURAÇÕES</button><button data-screen="about">SOBRE</button></div></div>
+      <div class="hero-card"><div class="hero-lines"></div><div class="hero-number">01 <span>/ 12</span></div><div class="hero-agent"><div class="agent-silhouette"><i></i><b></b><span></span></div><div class="hero-caption"><span>AGENTE EM DESTAQUE</span><strong id="featured-name">NOVA / PULSO</strong></div></div><div class="hero-stats"><span>FUNÇÃO <b id="featured-role">ASSALTO</b></span><span>STATUS <b class="online">PRONTA</b></span></div></div>
+      <footer class="menu-footer"><span>BUILD 0.1.0 · TESTE DE CAMPO</span><span>ANDROID <i>•</i> PAISAGEM</span></footer>
+    </section>
+
+    <section id="roster-screen" class="screen sub-screen">
+      <header class="sub-header"><button class="back-button" data-back>←</button><div><div class="eyebrow">SELEÇÃO DE OPERADORES</div><h2>ESCOLHA SEU <em>AGENTE</em></h2></div><div class="counter"><b id="roster-count">01</b><span>/ 12</span></div></header>
+      <div class="roster-layout"><div id="roster-grid" class="roster-grid"></div><article class="agent-detail"><div class="detail-art"><div class="agent-silhouette large"><i></i><b></b><span></span></div><span class="art-tag">ARQUIVO DE AGENTE <b>● VERIFICADO</b></span></div><div class="detail-info"><div class="eyebrow" id="detail-codename">CODINOME / PULSO</div><h3 id="detail-name">NOVA</h3><span class="role-pill" id="detail-role">ASSALTO</span><p id="detail-bio"></p><div class="ability-list"><div><span>01 / PASSIVA</span><b id="detail-passive"></b></div><div><span>02 / TÁTICA</span><b id="detail-active"></b></div><div><span>03 / ESPECIAL</span><b id="detail-ultimate"></b></div></div><button id="select-agent" class="button primary">SELECIONAR AGENTE <span>↗</span></button></div></article></div>
+    </section>
+
+    <section id="armory-screen" class="screen sub-screen"><header class="sub-header"><button class="back-button" data-back>←</button><div><div class="eyebrow">EQUIPAMENTO</div><h2>ARSENAL <em>DE CAMPO</em></h2></div></header><div class="info-panel"><div class="weapon-show"><div class="weapon-icon">⌁</div><span>01 / SECUNDÁRIA</span><h3>VETOR-9</h3><p>Pistola semiautomática · controle preciso · 12 / 48</p><div class="stat"><span>DANO</span><i><b style="width:54%"></b></i><strong>54</strong></div><div class="stat"><span>CADÊNCIA</span><i><b style="width:39%"></b></i><strong>39</strong></div></div><div class="weapon-show selected"><div class="weapon-icon">⌁</div><span>02 / PRINCIPAL</span><h3>ARX-4</h3><p>Rifle automático · versátil · 30 / 120</p><div class="stat"><span>DANO</span><i><b style="width:68%"></b></i><strong>68</strong></div><div class="stat"><span>CADÊNCIA</span><i><b style="width:76%"></b></i><strong>76</strong></div></div><p class="notice">Armas configuradas para a beta de treino. Arsenal expansível por dados.</p></div></section>
+
+    <section id="settings-screen" class="screen sub-screen"><header class="sub-header"><button class="back-button" data-back>←</button><div><div class="eyebrow">PREFERÊNCIAS</div><h2>AJUSTE O <em>CAMPO</em></h2></div></header><div class="info-panel settings-panel"><label>SENSIBILIDADE DE CÂMERA <input id="sensitivity" type="range" min="0.5" max="2" step="0.1" value="1"><b id="sensitivity-value">1.0×</b></label><label>VOLUME GERAL <input id="volume" type="range" min="0" max="1" step="0.05" value="0.7"><b id="volume-value">70%</b></label><label>QUALIDADE VISUAL <select id="quality"><option>Equilibrada</option><option>Alta</option><option>Economia</option></select></label><p class="notice">Paisagem recomendada. No Android, gire o dispositivo para uma experiência melhor.</p></div></section>
+
+    <section id="about-screen" class="screen sub-screen"><header class="sub-header"><button class="back-button" data-back>←</button><div><div class="eyebrow">INTELIGÊNCIA</div><h2>SOBRE A <em>OPERAÇÃO</em></h2></div></header><div class="info-panel about-panel"><div class="eyebrow">VEM COMER / BETA TÁTICA</div><h3>Uma missão.<br><em>Dois caminhos.</em></h3><p>Jogo de tiro tático em primeira pessoa, feito para partidas rápidas contra bots. Jogue como atacante: plante e proteja o dispositivo. Ou defenda: elimine a equipe rival e desarme a carga.</p><div class="about-tags"><span>3D EM TEMPO REAL</span><span>12 AGENTES</span><span>ROUNDS TÁTICOS</span><span>PRONTO PARA MOBILE</span></div></div></section>
+
+    <section id="match-screen" class="screen match-screen">
+      <div class="match-top"><div class="match-brand">V<span>·</span>C</div><div class="match-score"><div><b id="attack-score">0</b><span>ATK</span></div><div class="score-divider">—</div><div><b id="defense-score">0</b><span>DEF</span></div></div><div class="match-status"><span id="team-label">ATTACKERS</span><b id="round-label">ROUND 1 / 7</b></div><button id="pause-button" class="pause-button">Ⅱ</button></div>
+      <div id="objective-banner" class="objective-banner">ELIMINE A EQUIPE RIVAL <span>·</span> PLANTE NO SITE A OU B</div>
+      <div class="match-bottom"><div class="health-widget"><div class="health-cross">+</div><div><span>INTEGRIDADE</span><b id="health-value">100</b></div><i><b id="health-bar"></b></i></div><div id="interaction-prompt" class="interaction-prompt"></div><div class="ammo-widget"><span id="weapon-label">ARX-4</span><b><span id="ammo-value">30</span><small> / 120</small></b><span class="ammo-key">TOQUE: RECARREGAR</span></div></div>
+      <div class="touch-controls"><div id="move-pad" class="move-pad"><div class="pad-ring"><div id="pad-knob"></div></div><span>MOVER</span></div><div id="look-zone" class="look-zone"></div><div class="action-buttons"><button id="ability-button" class="action-button ability-action"><span>Q</span><small>TÁTICA</small></button><button id="special-button" class="action-button special-action"><span>F</span><small>ESPECIAL</small></button><button id="jump-button" class="action-button"><span>↑</span><small>PULAR</small></button><button id="reload-button" class="action-button"><span>↻</span><small>RECARGAR</small></button><button id="fire-button" class="action-button fire-action"><span>◎</span><small>ATIRAR</small></button><button id="interact-button" class="action-button interact-action"><span>◇</span><small>USAR</small></button></div></div>
+      <div id="round-overlay" class="round-overlay hidden"><div class="result-card"><span id="result-eyebrow" class="eyebrow">ROUND CONCLUÍDO</span><h2 id="result-title">ROUND <em>VENCIDO</em></h2><p id="result-copy">Área segura. Prepare-se para o próximo avanço.</p><button id="continue-button" class="button primary">PRÓXIMO ROUND <span>↗</span></button></div></div>
+      <div id="pause-overlay" class="round-overlay hidden"><div class="result-card"><span class="eyebrow">OPERAÇÃO PAUSADA</span><h2>RETOMAR <em>MISSÃO</em></h2><p>Prepare-se e volte para o campo.</p><button id="resume-button" class="button primary">CONTINUAR <span>↗</span></button><button id="exit-button" class="button ghost">VOLTAR AO MENU</button></div></div>
+      <div id="toast" class="toast"></div>
+    </section>
+    <div id="rotate-hint"><div class="rotate-icon">▱</div><b>GIRE O DISPOSITIVO</b><span>Este jogo foi desenvolvido para o modo paisagem.</span></div>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
