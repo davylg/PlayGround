@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#101114" />
+  <title>VEM COMER — Operação Eclipse</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23f25a32'/%3E%3Ctext x='32' y='46' text-anchor='middle' font-family='Arial,sans-serif' font-size='46' font-weight='900' fill='white'%3EV%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main id="app">
+    <canvas id="game" aria-label="Campo de jogo em primeira pessoa"></canvas>
+    <div class="grain"></div>
+
+    <section id="menu" class="screen">
+      <header class="topbar">
+        <a class="wordmark" href="#" aria-label="Vem Comer início"><span class="mark">V</span><span>VEM<span class="accent"> COMER</span></span></a>
+        <div class="season"><i></i> OPERAÇÃO ECLIPSE <span>·</span> BETA 0.8.4</div>
+        <button class="icon-btn" id="settingsBtn" title="Configurações">☷</button>
+      </header>
+      <div class="menu-layout">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="eyebrow-line"></span>PROTOCOLO DE COMBATE // 07</div>
+          <h1>O ALVO<br>É <em>SEU.</em></h1>
+          <p>Monte sua estratégia. Domine os sites.<br>Volte para casa.</p>
+          <div class="hero-actions">
+            <button id="playBtn" class="primary-btn"><span>JOGAR AGORA</span><b>↗</b></button>
+            <button id="rosterBtn" class="secondary-btn">ESCOLHER OPERADORA <span>＋</span></button>
+          </div>
+          <div class="match-note"><span class="pulse-dot"></span> MODO TREINO <b>·</b> 1 JOGADOR VS BOTS <b>·</b> 4 ROUNDS
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
+          <div class="art-glow"></div><div class="art-silhouette"><div class="sil-head"></div><div class="sil-body"></div><div class="sil-arm arm-left"></div><div class="sil-arm arm-right"></div><div class="sil-leg leg-left"></div><div class="sil-leg leg-right"></div><div class="sil-gun"></div></div>
+          <div class="art-index">01 <span>/</span> 12</div>
+          <div class="art-caption"><span>OPERADORA SELECIONADA</span><b id="menuOperator">NOVA / ASSALTO</b></div>
+          <div class="art-crosshair">✳</div>
+        </div>
+      </div>
+      <nav class="bottom-nav">
+        <button data-nav="OPERADORAS">OPERADORAS</button><button data-nav="ARSENAL">ARSENAL</button><button data-nav="PERSONALIZAÇÃO">PERSONALIZAÇÃO</button><button id="settingsNav">CONFIGURAÇÕES</button>
+        <span class="nav-status"><i></i> SISTEMAS ONLINE</span>
+      </nav>
+    </section>
+
+    <section id="roster" class="modal hidden" aria-modal="true" role="dialog">
+      <div class="modal-card roster-card">
+        <div class="modal-top"><div><div class="eyebrow">SELEÇÃO DE OPERADORA</div><h2>ESCOLHA SEU <em>ESTILO.</em></h2></div><button class="close-btn" data-close>×</button></div>
+        <div class="roster-content">
+          <div class="operator-list" id="operatorList"></div>
+          <div class="operator-detail"><div class="portrait-frame"><div class="portrait-art"><div class="portrait-head"></div><div class="portrait-torso"></div><div class="portrait-gear"></div></div><span class="portrait-tag">UNIDADE DE ELITE</span><span class="portrait-number">01</span></div>
+            <div class="detail-copy"><div class="eyebrow" id="operatorRole">ASSALTO · LINHA DE FRENTE</div><h3 id="operatorName">NOVA</h3><p id="operatorDesc"></p><div class="ability-row"><span class="ability-icon">◈</span><div><small>HABILIDADE ATIVA</small><b id="operatorAbility"></b></div></div><div class="ability-row"><span class="ability-icon special">✳</span><div><small>ESPECIAL</small><b id="operatorSpecial"></b></div></div><button class="primary-btn select-btn" id="confirmOperator">SELECIONAR <b>↗</b></button></div>
+          </div>
+        </div>
+        <p class="roster-foot">12 OPERADORAS DISPONÍVEIS <span>·</span> TODAS AS UNIDADES SÃO ADULTAS E EQUIPADAS PARA COMBATE</p>
+      </div>
+    </section>
+
+    <section id="settings" class="modal hidden" aria-modal="true" role="dialog">
+      <div class="modal-card settings-card"><div class="modal-top"><div><div class="eyebrow">SISTEMA</div><h2>AJUSTES</h2></div><button class="close-btn" data-close>×</button></div>
+      <label>SENSIBILIDADE <input id="sensitivity" type="range" min="1" max="10" value="5"><output>5</output></label>
+      <label>VOLUME <input id="volume" type="range" min="0" max="100" value="65"><output>65%</output></label>
+      <p class="settings-hint">WASD mover · Shift correr · Espaço pular · Mouse mirar / atirar · R recarregar · E interagir · Q habilidade</p></div>
+    </section>
+
+    <section id="gameHud" class="hud hidden">
+      <div class="hud-top"><div class="team-score attackers"><span>ATT</span><b id="attScore">0</b></div><div class="round-info"><span id="roundLabel">ROUND 01</span><b id="roundTimer">1:30</b><small id="objectiveLabel">ELIMINE OS DEFENSORES</small></div><div class="team-score defenders"><b id="defScore">0</b><span>DEF</span></div></div>
+      <div class="site-indicator" id="siteIndicator"><i></i> LOCALIZANDO SITE</div>
+      <div class="feed" id="feed"></div>
+      <div class="crosshair"><i></i><i></i><i></i><i></i><b></b></div>
+      <div class="hud-bottom"><div class="health-box"><div class="health-symbol">＋</div><div><small>INTEGRIDADE</small><b id="healthValue">100</b></div><div class="health-bar"><i id="healthBar"></i></div></div><div class="ability-hud"><div class="keycap">Q</div><div><small>HABILIDADE</small><b id="abilityLabel">IMPULSO</b></div><span id="abilityCooldown">PRONTA</span></div><div class="ammo-box"><div><small id="weaponName">VPR-9 RIFLE</small><b><span id="ammoValue">24</span><i>/</i><span id="reserveValue">72</span></b></div><div class="ammo-glyph">▰</div></div></div>
+      <div class="hit-marker" id="hitMarker">×</div><div class="toast" id="toast"></div>
+      <div class="mobile-controls" id="mobileControls"><div id="joystick" class="joystick"><div class="joy-knob"></div></div><div id="lookZone" class="look-zone"></div><div class="mobile-buttons"><button id="fireTouch" class="touch-fire">FIRE</button><button id="reloadTouch">↻</button><button id="jumpTouch">↑</button><button id="interactTouch">E</button><button id="abilityTouch">Q</button></div></div>
+      <div class="interact-prompt hidden" id="interactPrompt"><span>E</span><b id="interactText">PLANTAR DISPOSITIVO</b><div class="progress-track"><i id="interactProgress"></i></div></div>
+      <div class="round-result hidden" id="roundResult"><span id="resultEyebrow">ROUND 01</span><b id="resultTitle">ROUND VENCIDO</b><small id="resultText">TODOS OS ALVOS NEUTRALIZADOS</small></div>
+      <button id="exitGame" class="exit-game">⟵ MENU</button>
+    </section>
+  </main>
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
