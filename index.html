@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#080b12" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="Vem Comer — arena FPS 3D tática. Escolha sua operadora, domine os sites e vença a partida." />
+    <title>VEM COMER — Arena Tática 3D</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23080b12'/%3E%3Cpath d='M12 20l9 26 11-18 11 18 9-26' fill='none' stroke='%23ff5b2e' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="game-canvas" aria-label="Cena 3D do jogo Vem Comer"></canvas>
+      <div class="vignette"></div>
+      <div class="scanlines"></div>
+
+      <div id="loading-screen" class="screen loading-screen">
+        <div class="loader-mark">VC</div>
+        <div class="loader-title">VEM COMER</div>
+        <div class="loader-track"><span id="loading-bar"></span></div>
+        <div id="loading-label" class="loader-label">Preparando a arena…</div>
+      </div>
+
+      <div id="menu-layer" class="menu-layer">
+        <header class="topbar">
+          <button class="brand" data-screen="main" aria-label="Início">
+            <span class="brand-mark">VC</span>
+            <span class="brand-word">VEM COMER<small>ARENA TÁTICA 3D</small></span>
+          </button>
+          <div class="topbar-right">
+            <div class="online-pill"><i></i><span id="mode-pill">BETA • VS BOTS</span></div>
+            <button class="icon-btn" id="audio-toggle" aria-label="Alternar áudio" title="Áudio">◈</button>
+            <button class="icon-btn" id="fullscreen-btn" aria-label="Tela cheia" title="Tela cheia">⛶</button>
+          </div>
+        </header>
+
+        <main id="screens">
+          <section id="screen-main" class="screen menu-screen active" data-screen-view="main">
+            <div class="hero-copy">
+              <div class="eyebrow"><span></span> TEMPORADA 01 • OPERAÇÃO DOCA MERIDIANA</div>
+              <h1 class="logo">VEM<br /><em>COMER</em></h1>
+              <p class="tagline">Cinco contra cinco. Um objetivo.<br />Ninguém sai limpo.</p>
+              <div class="hero-actions">
+                <button class="btn btn-primary btn-xl" id="quickplay-btn">
+                  <span class="btn-glyph">▶</span>
+                  <span><b>JOGAR</b><small>Entrar na arena</small></span>
+                </button>
+                <button class="btn btn-ghost" data-screen="characters"><span class="btn-glyph">✦</span> PERSONAGENS</button>
+              </div>
+              <div class="hero-meta">
+                <div><strong>5v5</strong><span>TÁTICO</span></div>
+                <div><strong>4</strong><span>ROUNDS P/ VENCER</span></div>
+                <div><strong>12</strong><span>OPERADORAS</span></div>
+              </div>
+            </div>
+
+            <div class="hero-card-wrap">
+              <div class="hero-card" id="hero-card">
+                <div class="hero-card-glow"></div>
+                <div class="hero-card-label">OPERADORA EM DESTAQUE</div>
+                <div class="hero-card-name" id="hero-name">IARA</div>
+                <div class="hero-card-role" id="hero-role">ASSALTO • MOBILIDADE</div>
+                <p id="hero-desc">Ex-salvadora costeira. Transforma velocidade em pressão e abre caminhos onde não deveria existir nenhum.</p>
+                <div class="hero-card-footer">
+                  <button class="text-btn" data-screen="characters">TROCAR OPERADORA <span>→</span></button>
+                  <span class="hero-age" id="hero-age">27 ANOS</span>
+                </div>
+              </div>
+            </div>
+
+            <nav class="main-nav">
+              <button class="nav-card" data-screen="characters"><span class="nav-icon">✦</span><b>PERSONAGENS</b><small>12 operadoras únicas</small></button>
+              <button class="nav-card" data-screen="armory"><span class="nav-icon">▰</span><b>ARMAS</b><small>Arsenal e atributos</small></button>
+              <button class="nav-card" data-screen="customization"><span class="nav-icon">◈</span><b>PERSONALIZAÇÃO</b><small>Skins e identidade</small></button>
+              <button class="nav-card" data-screen="settings"><span class="nav-icon">⚙</span><b>CONFIGURAÇÕES</b><small>Áudio, vídeo e controles</small></button>
+            </nav>
+
+            <div class="drag-hint"><span>↻</span> ARRASTE PARA GIRAR A OPERADORA</div>
+          </section>
+
+          <section id="screen-characters" class="screen sub-screen" data-screen-view="characters">
+            <div class="screen-head">
+              <button class="back-btn" data-screen="main">←</button>
+              <div><div class="eyebrow"><span></span> ELENCO TÁTICO</div><h2>PERSONAGENS</h2></div>
+              <div class="screen-head-meta">12 OPERADORAS • TODAS ADULTAS</div>
+            </div>
+            <div class="character-layout">
+              <div class="roster" id="roster"></div>
+              <aside class="character-detail">
+                <div class="detail-top">
+                  <div>
+                    <div class="detail-index" id="detail-index">01 / 12</div>
+                    <h3 id="detail-name">IARA</h3>
+                    <div class="role-chip" id="detail-role">ASSALTO</div>
+                  </div>
+                  <div class="age-chip" id="detail-age">27 ANOS</div>
+                </div>
+                <p class="detail-desc" id="detail-desc"></p>
+                <div class="stat-row">
+                  <div class="stat"><label>VIDA</label><div class="bar"><i id="stat-health"></i></div><b id="stat-health-val"></b></div>
+                  <div class="stat"><label>MOBILIDADE</label><div class="bar"><i id="stat-speed"></i></div><b id="stat-speed-val"></b></div>
+                  <div class="stat"><label>CONTROLE</label><div class="bar"><i id="stat-control"></i></div><b id="stat-control-val"></b></div>
+                </div>
+                <div class="ability-list" id="detail-abilities"></div>
+                <div class="skin-strip">
+                  <div class="skin-strip-label">VISUAL</div>
+                  <div id="detail-skins" class="swatches"></div>
+                </div>
+                <div class="detail-actions">
+                  <button class="btn btn-primary" id="select-character-btn">SELECIONAR OPERADORA</button>
+                  <button class="btn btn-ghost" id="detail-deploy-btn">JOGAR COM ELA</button>
+                </div>
+              </aside>
+            </div>
+            <div class="viewer-controls"><span>ARRASTE • GIRAR</span><span>SCROLL • ZOOM</span><span>PINÇA • ZOOM</span></div>
+          </section>
+
+          <section id="screen-armory" class="screen sub-screen" data-screen-view="armory">
+            <div class="screen-head">
+              <button class="back-btn" data-screen="main">←</button>
+              <div><div class="eyebrow"><span></span> ARSENAL</div><h2>ARMAS</h2></div>
+              <div class="screen-head-meta">EQUIPAMENTO PADRÃO DA ARENA</div>
+            </div>
+            <div class="armory-grid" id="armory-grid"></div>
+            <div class="panel-note">O arsenal cresce com a temporada. Armas futuras podem ser adicionadas como novos <code>WeaponData</code> sem alterar o sistema de combate.</div>
+          </section>
+
+          <section id="screen-customization" class="screen sub-screen" data-screen-view="customization">
+            <div class="screen-head">
+              <button class="back-btn" data-screen="main">←</button>
+              <div><div class="eyebrow"><span></span> IDENTIDADE</div><h2>PERSONALIZAÇÃO</h2></div>
+              <div class="screen-head-meta">SKINS • BANNERS • EFEITOS</div>
+            </div>
+            <div class="custom-layout">
+              <div class="custom-preview">
+                <div class="custom-preview-title" id="custom-name">IARA</div>
+                <div class="custom-preview-sub" id="custom-role">ASSALTO • MOBILIDADE</div>
+                <div class="custom-preview-tag">VISUAL EQUIPADO</div>
+              </div>
+              <div class="custom-panel">
+                <h3>VISUAIS DISPONÍVEIS</h3>
+                <p>Três variantes de camuflagem tática para cada operadora. Novas skins sazonais serão adicionadas sem alterar o modelo de dados.</p>
+                <div id="custom-swatches" class="custom-swatches"></div>
+                <h3>BANNER DE JOGADOR</h3>
+                <div class="banner-grid" id="banner-grid"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="screen-settings" class="screen sub-screen" data-screen-view="settings">
+            <div class="screen-head">
+              <button class="back-btn" data-screen="main">←</button>
+              <div><div class="eyebrow"><span></span> SISTEMA</div><h2>CONFIGURAÇÕES</h2></div>
+              <div class="screen-head-meta">SALVAS AUTOMATICAMENTE</div>
+            </div>
+            <div class="settings-layout">
+              <div class="settings-group">
+                <h3>CONTROLES</h3>
+                <label class="range-row"><span>Sensibilidade da câmera</span><output id="sens-output">1.0×</output><input id="sens-range" type="range" min="0.3" max="2.5" step="0.1" value="1" /></label>
+                <label class="range-row"><span>Escala do joystick</span><output id="stick-output">100%</output><input id="stick-range" type="range" min="70" max="130" step="5" value="100" /></label>
+                <label class="toggle-row"><span>Vibração tátil<small>Quando suportada pelo dispositivo</small></span><input id="vibration-toggle" type="checkbox" checked /><i></i></label>
+                <label class="toggle-row"><span>Inverter eixo Y<small>Câmera vertical invertida</small></span><input id="invert-toggle" type="checkbox" /><i></i></label>
+              </div>
+              <div class="settings-group">
+                <h3>ÁUDIO</h3>
+                <label class="range-row"><span>Volume geral</span><output id="master-output">80%</output><input id="master-range" type="range" min="0" max="100" step="5" value="80" /></label>
+                <label class="range-row"><span>Música</span><output id="music-output">45%</output><input id="music-range" type="range" min="0" max="100" step="5" value="45" /></label>
+                <label class="range-row"><span>Efeitos</span><output id="sfx-output">85%</output><input id="sfx-range" type="range" min="0" max="100" step="5" value="85" /></label>
+              </div>
+              <div class="settings-group">
+                <h3>VÍDEO</h3>
+                <label class="select-row"><span>Qualidade gráfica</span>
+                  <select id="quality-select">
+                    <option value="low">Econômica</option>
+                    <option value="medium" selected>Equilibrada</option>
+                    <option value="high">Alta</option>
+                  </select>
+                </label>
+                <label class="range-row"><span>Campo de visão</span><output id="fov-output">78°</output><input id="fov-range" type="range" min="65" max="95" step="1" value="78" /></label>
+                <label class="toggle-row"><span>Sombras<small>Reduza para economizar bateria</small></span><input id="shadows-toggle" type="checkbox" checked /><i></i></label>
+                <label class="toggle-row"><span>Efeitos de partículas<small>Faíscas, fumaça e impactos</small></span><input id="particles-toggle" type="checkbox" checked /><i></i></label>
+              </div>
+            </div>
+            <button class="btn btn-ghost reset-settings" id="reset-settings">RESTAURAR PADRÕES</button>
+          </section>
+
+          <section id="screen-about" class="screen sub-screen" data-screen-view="about">
+            <div class="screen-head">
+              <button class="back-btn" data-screen="main">←</button>
+              <div><div class="eyebrow"><span></span> PROJETO</div><h2>SOBRE</h2></div>
+            </div>
+            <div class="about-layout">
+              <div class="about-hero"><span class="brand-mark big">VC</span><h3>VEM COMER</h3><p>Arena tática 3D para navegador e Android. Um beta jogável com personagens, armas, habilidades, bots, rounds e objetivo de bomba.</p></div>
+              <div class="about-grid">
+                <div><b>ENGINE</b><span>Three.js / WebGL 2</span></div>
+                <div><b>ARQUITETURA</b><span>Modular e expansível</span></div>
+                <div><b>MODO</b><span>5v5 contra bots</span></div>
+                <div><b>PLATAFORMA</b><span>Mobile-first / Desktop</span></div>
+                <div><b>CONTEÚDO</b><span>12 operadoras adultas</span></div>
+                <div><b>STATUS</b><span>BETA JOGÁVEL</span></div>
+              </div>
+              <div class="about-note">
+                <b>NOTA DE DIREÇÃO</b>
+                <p>Esta versão foi construída como um jogo de ação tático. As personagens são adultas, com figurinos táticos completos e apresentação não explícita. O pedido de nudez e conteúdo sexual foi substituído por uma direção visual segura e compatível com publicação.</p>
+              </div>
+              <div class="credits">VEM COMER © 2026 • CONSTRUÍDO PARA A COMUNIDADE • VERSÃO 1.0.0-BETA</div>
+            </div>
+          </section>
+        </main>
+
+        <footer class="menu-footer">
+          <span>BUILD 1.0.0-BETA</span>
+          <span>3D • MOBILE READY</span>
+          <button data-screen="about">SOBRE O PROJETO</button>
+          <span class="footer-pulse"><i></i> ARENA ONLINE</span>
+        </footer>
+      </div>
+
+      <div id="deploy-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Preparar partida">
+        <div class="modal-backdrop"></div>
+        <div class="deploy-card">
+          <button class="modal-close" id="deploy-close">✕</button>
+          <div class="eyebrow"><span></span> BRIEFING DE OPERAÇÃO</div>
+          <h2>DOCA MERIDIANA</h2>
+          <p class="deploy-sub">Escolha seu lado e prepare a operadora. A partida é 5v5, primeiro time a vencer 4 rounds leva.</p>
+          <div class="deploy-operadora">
+            <div class="deploy-avatar" id="deploy-avatar">IA</div>
+            <div><small>OPERADORA</small><b id="deploy-name">IARA</b><span id="deploy-role">ASSALTO • MOBILIDADE</span></div>
+            <button class="text-btn" data-screen="characters" id="deploy-change">TROCAR</button>
+          </div>
+          <div class="side-picker">
+            <button class="side-card attackers selected" data-side="attackers">
+              <span class="side-icon">▲</span><b>ATTACKERS</b><small>Plante a bomba. Defenda até explodir.</small>
+            </button>
+            <button class="side-card defenders" data-side="defenders">
+              <span class="side-icon">▼</span><b>DEFENDERS</b><small>Proteja os sites. Desarme a bomba.</small>
+            </button>
+          </div>
+          <div class="deploy-options">
+            <label>DIFICULDADE DOS BOTS
+              <select id="bot-difficulty">
+                <option value="recruit">Recruta</option>
+                <option value="veteran" selected>Veterano</option>
+                <option value="elite">Elite</option>
+              </select>
+            </label>
+            <label>ROUNDS PARA VENCER
+              <select id="round-target">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4" selected>4</option>
+                <option value="5">5</option>
+              </select>
+            </label>
+          </div>
+          <div class="deploy-map">
+            <div class="map-thumb"><i class="site-dot a">A</i><i class="site-dot b">B</i><span class="spawn atk">ATK</span><span class="spawn def">DEF</span></div>
+            <div><b>MAPA 01 • DOCA MERIDIANA</b><span>Dois sites • Rotas centrais e flancos • Combate de curta e média distância</span></div>
+          </div>
+          <button class="btn btn-primary btn-deploy" id="start-match-btn">INICIAR PARTIDA <span>→</span></button>
+        </div>
+      </div>
+
+      <div id="hud-layer" class="hud-layer hidden">
+        <div class="hud-top">
+          <div class="score-team attackers" id="hud-atk">
+            <b id="hud-atk-score">0</b><span>ATTACKERS</span><em id="hud-atk-alive">5 VIVOS</em>
+          </div>
+          <div class="round-clock">
+            <span id="hud-round-label">ROUND 1</span>
+            <b id="hud-timer">01:30</b>
+            <div id="hud-bomb-clock" class="bomb-clock hidden">BOMBA <strong>00:35</strong></div>
+          </div>
+          <div class="score-team defenders" id="hud-def">
+            <span>DEFENDERS</span><b id="hud-def-score">0</b><em id="hud-def-alive">5 VIVOS</em>
+          </div>
+        </div>
+        <div class="hud-objective" id="hud-objective"><i></i><span>AVANCE PARA O SITE</span></div>
+        <div class="killfeed" id="killfeed"></div>
+        <div class="minimap-wrap">
+          <canvas id="minimap" width="220" height="220"></canvas>
+          <div class="minimap-label"><span>DOCA MERIDIANA</span><b id="minimap-site">SITE A / B</b></div>
+        </div>
+        <div class="crosshair" id="crosshair"><i></i><i></i><i></i><i></i><span></span></div>
+        <div class="hitmarker" id="hitmarker">✕</div>
+        <div class="damage-vignette" id="damage-vignette"></div>
+        <div class="kill-banner hidden" id="kill-banner"><b>ELIMINADO</b><span id="kill-name">OPERADORA</span></div>
+        <div class="ability-feed" id="ability-feed"></div>
+
+        <div class="hud-bottom">
+          <div class="vitals-panel">
+            <div class="player-tag"><span class="tag-dot"></span><b id="hud-player-name">IARA</b><span id="hud-player-role">ASSALTO</span></div>
+            <div class="health-row">
+              <div class="health-icon">✚</div>
+              <div class="health-bar"><i id="health-fill"></i><span id="health-text">100</span></div>
+            </div>
+            <div class="shield-row hidden" id="shield-row"><span>ESCUDO</span><div class="shield-bar"><i id="shield-fill"></i></div></div>
+          </div>
+          <div class="ammo-panel">
+            <div class="weapon-name" id="hud-weapon">RIFLE VECTOR</div>
+            <div class="ammo-count"><b id="hud-ammo">30</b><span>/ <i id="hud-reserve">90</i></span></div>
+            <div class="reload-bar hidden" id="reload-bar"><i></i><span>RECARREGANDO</span></div>
+          </div>
+        </div>
+
+        <div class="abilities-hud">
+          <button class="ability-slot" id="ability-active">
+            <span class="ability-key">Q</span>
+            <div class="ability-icon" id="ability-active-icon">◈</div>
+            <div class="ability-info"><b id="ability-active-name">IMPULSO</b><small id="ability-active-cd">PRONTO</small></div>
+            <svg class="cooldown-ring" viewBox="0 0 100 100"><circle id="ability-active-ring" cx="50" cy="50" r="44"></circle></svg>
+          </button>
+          <button class="ability-slot special" id="ability-special">
+            <span class="ability-key">F</span>
+            <div class="ability-icon" id="ability-special-icon">✦</div>
+            <div class="ability-info"><b id="ability-special-name">TSUNAMI</b><small id="ability-special-cd">PRONTO</small></div>
+            <svg class="cooldown-ring" viewBox="0 0 100 100"><circle id="ability-special-ring" cx="50" cy="50" r="44"></circle></svg>
+          </button>
+        </div>
+
+        <div class="interaction-prompt hidden" id="interaction-prompt">
+          <div class="prompt-key" id="prompt-key">E</div>
+          <div><b id="prompt-title">PLANTAR BOMBA</b><small id="prompt-sub">Segure para plantar</small></div>
+          <div class="prompt-progress"><i id="prompt-progress-fill"></i></div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="action-btn reload" id="btn-reload">↻<small>RECARGA</small></button>
+          <button class="action-btn jump" id="btn-jump">⤒<small>PULO</small></button>
+        </div>
+
+        <div class="mobile-controls" id="mobile-controls">
+          <div class="joystick-zone" id="joystick-zone"><div class="joystick-base" id="joystick-base"><div class="joystick-knob" id="joystick-knob"></div></div><span>MOVIMENTO</span></div>
+          <div class="look-zone" id="look-zone"><span>ARRASTE PARA MIRAR</span></div>
+          <div class="mobile-actions">
+            <button class="action-btn reload" id="m-btn-reload">↻<small>RECARGA</small></button>
+            <button class="action-btn jump" id="m-btn-jump">⤒<small>PULO</small></button>
+            <button class="action-btn interact hidden" id="m-btn-interact">E<small>INTERAGIR</small></button>
+            <button class="shoot-btn" id="m-btn-shoot"><span></span><small>ATIRAR</small></button>
+            <button class="ability-mobile" id="m-btn-ability">Q<small id="m-ability-label">HABILIDADE</small></button>
+            <button class="ability-mobile special" id="m-btn-special">F<small id="m-special-label">ESPECIAL</small></button>
+          </div>
+        </div>
+
+        <button class="pause-btn" id="pause-btn">Ⅱ</button>
+      </div>
+
+      <div id="round-banner" class="round-banner hidden">
+        <div class="round-banner-inner"><small id="round-banner-kicker">ROUND 1</small><b id="round-banner-title">PREPARE-SE</b><span id="round-banner-sub">A partida começa em instantes</span></div>
+      </div>
+
+      <div id="death-overlay" class="death-overlay hidden">
+        <div class="death-title">ELIMINADA</div>
+        <div class="death-sub">Você caiu. Acompanhe o round ou aguarde a próxima rodada.</div>
+        <div class="death-stats"><span>DANO CAUSADO <b id="death-damage">0</b></span><span>ELIMINAÇÕES <b id="death-kills">0</b></span></div>
+      </div>
+
+      <div id="match-end" class="match-end hidden">
+        <div class="match-end-card">
+          <div class="eyebrow"><span></span> OPERAÇÃO ENCERRADA</div>
+          <h2 id="match-end-title">VITÓRIA</h2>
+          <p id="match-end-sub">Sua equipe dominou a Doca Meridiana.</p>
+          <div class="match-score"><b id="match-score-atk">0</b><span>ATTACKERS</span><em>×</em><span>DEFENDERS</span><b id="match-score-def">0</b></div>
+          <div class="match-stats" id="match-stats"></div>
+          <div class="match-actions">
+            <button class="btn btn-primary" id="rematch-btn">JOGAR NOVAMENTE</button>
+            <button class="btn btn-ghost" id="return-menu-btn">VOLTAR AO MENU</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="pause-overlay" class="pause-overlay hidden">
+        <div class="pause-card">
+          <div class="eyebrow"><span></span> PARTIDA PAUSADA</div>
+          <h2>PAUSA</h2>
+          <p>A arena continua quando você voltar. No modo online, a partida não pausa.</p>
+          <button class="btn btn-primary" id="resume-btn">CONTINUAR</button>
+          <button class="btn btn-ghost" id="abandon-btn">ABANDONAR PARTIDA</button>
+          <div class="pause-tip">DICA • Use cobertura e avance com sua equipe. Sozinho, você é um alvo fácil.</div>
+        </div>
+      </div>
+
+      <div id="toast-root" class="toast-root"></div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
